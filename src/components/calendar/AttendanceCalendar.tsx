@@ -35,7 +35,7 @@ export function AttendanceCalendar() {
   const exercises = selected ? exercisesForDate(selected) : [];
 
   return (
-    <div className="m3-card-elevated p-6">
+    <div className="m3-card-elevated p-6 lg:mx-auto lg:max-w-3xl lg:p-5 xl:max-w-none xl:p-6">
       <div className="flex items-center justify-between mb-5">
         <div>
           <div className="flex items-center gap-2 text-xs font-medium text-on-surface-variant">
