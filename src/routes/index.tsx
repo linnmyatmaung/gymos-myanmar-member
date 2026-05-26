@@ -15,6 +15,7 @@ import { StatCard } from "@/components/dashboard/StatCard";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { analytics } from "@/mockdata/analytics";
+import { getNextTrainerAssignedWorkout } from "@/mockdata/exercises";
 import { member } from "@/mockdata/member";
 import { workoutPlan } from "@/mockdata/workoutPlan";
 import {
@@ -36,7 +37,7 @@ function Dashboard() {
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
   const [completion, setCompletion] = useState(() => createEmptyWorkoutCompletion(workoutPlan));
   const todaySummary = getTodayWorkoutSummary(workoutPlan, completion);
-  const nextWorkout = getNextWorkoutDay();
+  const nextWorkout = getNextTrainerAssignedWorkout();
 
   useEffect(() => {
     const syncCompletion = () => setCompletion(loadWorkoutCompletion(workoutPlan));
@@ -109,26 +110,7 @@ function Dashboard() {
   );
 }
 
-function getNextWorkoutDay() {
-  const todayIndex = new Date().getDay();
-  const weekOrder = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-  for (let offset = 0; offset < weekOrder.length; offset += 1) {
-    const day = weekOrder[(todayIndex + offset) % weekOrder.length];
-    const plan = workoutPlan.find((item) => item.day === day && item.focus !== "Active Recovery");
-    if (plan && !plan.completed) {
-      return {
-        ...plan,
-        relativeDay: offset === 0 ? "Today" : offset === 1 ? "Tomorrow" : day,
-      };
-    }
-  }
-
-  const fallback = workoutPlan.find((item) => item.focus !== "Active Recovery") ?? workoutPlan[0];
-  return { ...fallback, relativeDay: fallback.day };
-}
-
-function NextWorkoutCard({ nextWorkout }: { nextWorkout: ReturnType<typeof getNextWorkoutDay> }) {
+function NextWorkoutCard({ nextWorkout }: { nextWorkout: ReturnType<typeof getNextTrainerAssignedWorkout> }) {
   const totalMinutes = nextWorkout.exercises.reduce((total, exercise) => {
     const minutes = Number.parseInt(exercise.duration, 10);
     return total + (Number.isNaN(minutes) ? 0 : minutes);

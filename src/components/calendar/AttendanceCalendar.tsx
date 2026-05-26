@@ -32,7 +32,7 @@ export function AttendanceCalendar() {
   const firstDow = new Date(today.getFullYear(), today.getMonth(), 1).getDay();
 
   const selectedDay = selected ? attendance.find((d) => d.date === selected) : null;
-  const exercises = selected ? exercisesForDate(selected) : [];
+  const exercises = selected ? exercisesForDate(selected, selectedDay?.status) : [];
 
   return (
     <div className="m3-card-elevated p-6 lg:mx-auto lg:max-w-3xl lg:p-5 xl:max-w-none xl:p-6">
