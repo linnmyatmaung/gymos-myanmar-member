@@ -3,8 +3,10 @@ import {
   Outlet,
   Link,
   createRootRouteWithContext,
+  redirect,
   useRouter,
 } from "@tanstack/react-router";
+import { isAuthenticated } from "@/lib/auth";
 
 function NotFoundComponent() {
   return (
@@ -64,6 +66,23 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  beforeLoad: ({ location }) => {
+    const isLoginPage = location.pathname === "/login";
+    const hasSession = isAuthenticated();
+
+    if (!hasSession && !isLoginPage) {
+      throw redirect({
+        to: "/login",
+        search: {
+          redirect: location.href,
+        },
+      });
+    }
+
+    if (hasSession && isLoginPage) {
+      throw redirect({ to: "/" });
+    }
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },

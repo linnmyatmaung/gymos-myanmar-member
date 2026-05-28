@@ -1,8 +1,22 @@
 import { member } from "@/mockdata/member";
-import { Mail, Phone, IdCard, Crown, CalendarCheck, User, Target } from "lucide-react";
+import { getCurrentUser, logout } from "@/lib/auth";
+import { useNavigate, useRouter } from "@tanstack/react-router";
+import { Mail, Phone, IdCard, Crown, CalendarCheck, User, Target, LogOut } from "lucide-react";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 export function ProfileCard() {
+  const navigate = useNavigate();
+  const router = useRouter();
+  const user = getCurrentUser();
+  const profileName = user?.displayName ?? member.name;
+
+  const handleLogout = async () => {
+    logout();
+    await router.invalidate();
+    await navigate({ to: "/login", search: { redirect: "/" }, replace: true });
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -11,11 +25,11 @@ export function ProfileCard() {
     >
       <div className="absolute -right-20 -top-20 size-56 rounded-full bg-secondary-container/40 blur-3xl" />
       <div className="absolute -left-16 -bottom-16 size-48 rounded-full bg-primary-container/10 blur-3xl" />
-      <div className="relative flex flex-col sm:flex-row sm:items-center gap-5">
+      <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center">
         <div className="relative">
           <img
             src={member.avatar}
-            alt={member.name}
+            alt={profileName}
             className="size-24 rounded-3xl bg-surface-container ring-4 ring-white shadow-soft"
           />
           <div className="absolute -bottom-1 -right-1 bg-secondary text-white text-[10px] font-bold px-2 py-1 rounded-full">
@@ -24,7 +38,7 @@ export function ProfileCard() {
         </div>
         <div className="flex-1 min-w-0">
           <div className="text-xs text-on-surface-variant">Welcome back</div>
-          <h2 className="font-display text-2xl font-bold text-on-surface truncate">{member.name}</h2>
+          <h2 className="font-display text-2xl font-bold text-on-surface truncate">{profileName}</h2>
           <div className="flex items-center gap-2 mt-1 text-xs">
             <Crown className="size-3.5 text-secondary" />
             <span className="font-medium text-on-surface">{member.membership}</span>
@@ -32,6 +46,15 @@ export function ProfileCard() {
             <span className="text-on-surface-variant">Expires {member.expiry}</span>
           </div>
         </div>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={handleLogout}
+          className="h-10 w-full rounded-xl bg-surface-lowest sm:w-auto"
+        >
+          <LogOut className="size-4" />
+          Logout
+        </Button>
       </div>
 
       <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">

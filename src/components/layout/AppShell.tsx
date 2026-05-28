@@ -1,7 +1,17 @@
-import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Dumbbell, Salad, Flame, ScanLine, Sparkles, UserCircle } from "lucide-react";
+import { Link, useNavigate, useRouter, useRouterState } from "@tanstack/react-router";
+import {
+  LayoutDashboard,
+  Dumbbell,
+  Salad,
+  Flame,
+  ScanLine,
+  Sparkles,
+  UserCircle,
+  LogOut,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { getCurrentUser, logout } from "@/lib/auth";
 
 export const navItems = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -14,6 +24,15 @@ export const navItems = [
 
 export function Sidebar() {
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
+  const router = useRouter();
+  const user = getCurrentUser();
+  const handleLogout = async () => {
+    logout();
+    await router.invalidate();
+    await navigate({ to: "/login", search: { redirect: "/" }, replace: true });
+  };
+
   return (
     <aside className="hidden lg:flex flex-col w-72 shrink-0 h-screen sticky top-0 p-5 bg-surface border-r border-outline-variant/40">
       <div className="flex items-center gap-3 px-3 py-4">
@@ -55,7 +74,22 @@ export function Sidebar() {
         })}
       </nav>
 
-     
+      <div className="mt-auto rounded-2xl bg-surface-container-low p-3">
+        <div className="px-1">
+          <div className="truncate text-sm font-semibold text-on-surface">
+            {user?.displayName ?? "Member"}
+          </div>
+          <div className="truncate text-xs text-on-surface-variant">{user?.username}</div>
+        </div>
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="mt-3 flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface"
+        >
+          <LogOut className="size-4" />
+          Sign out
+        </button>
+      </div>
     </aside>
   );
 }

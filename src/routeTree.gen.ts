@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PoseCorrectorRouteImport } from './routes/pose-corrector'
 import { Route as PersonalPlanRouteImport } from './routes/personal-plan'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as DietPlanRouteImport } from './routes/diet-plan'
 import { Route as CalorieCounterRouteImport } from './routes/calorie-counter'
 import { Route as IndexRouteImport } from './routes/index'
@@ -29,6 +30,11 @@ const PoseCorrectorRoute = PoseCorrectorRouteImport.update({
 const PersonalPlanRoute = PersonalPlanRouteImport.update({
   id: '/personal-plan',
   path: '/personal-plan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DietPlanRoute = DietPlanRouteImport.update({
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/calorie-counter': typeof CalorieCounterRoute
   '/diet-plan': typeof DietPlanRoute
+  '/login': typeof LoginRoute
   '/personal-plan': typeof PersonalPlanRoute
   '/pose-corrector': typeof PoseCorrectorRoute
   '/profile': typeof ProfileRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/calorie-counter': typeof CalorieCounterRoute
   '/diet-plan': typeof DietPlanRoute
+  '/login': typeof LoginRoute
   '/personal-plan': typeof PersonalPlanRoute
   '/pose-corrector': typeof PoseCorrectorRoute
   '/profile': typeof ProfileRoute
@@ -68,6 +76,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/calorie-counter': typeof CalorieCounterRoute
   '/diet-plan': typeof DietPlanRoute
+  '/login': typeof LoginRoute
   '/personal-plan': typeof PersonalPlanRoute
   '/pose-corrector': typeof PoseCorrectorRoute
   '/profile': typeof ProfileRoute
@@ -78,6 +87,7 @@ export interface FileRouteTypes {
     | '/'
     | '/calorie-counter'
     | '/diet-plan'
+    | '/login'
     | '/personal-plan'
     | '/pose-corrector'
     | '/profile'
@@ -86,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/calorie-counter'
     | '/diet-plan'
+    | '/login'
     | '/personal-plan'
     | '/pose-corrector'
     | '/profile'
@@ -94,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/calorie-counter'
     | '/diet-plan'
+    | '/login'
     | '/personal-plan'
     | '/pose-corrector'
     | '/profile'
@@ -103,6 +115,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CalorieCounterRoute: typeof CalorieCounterRoute
   DietPlanRoute: typeof DietPlanRoute
+  LoginRoute: typeof LoginRoute
   PersonalPlanRoute: typeof PersonalPlanRoute
   PoseCorrectorRoute: typeof PoseCorrectorRoute
   ProfileRoute: typeof ProfileRoute
@@ -129,6 +142,13 @@ declare module '@tanstack/react-router' {
       path: '/personal-plan'
       fullPath: '/personal-plan'
       preLoaderRoute: typeof PersonalPlanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/diet-plan': {
@@ -159,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CalorieCounterRoute: CalorieCounterRoute,
   DietPlanRoute: DietPlanRoute,
+  LoginRoute: LoginRoute,
   PersonalPlanRoute: PersonalPlanRoute,
   PoseCorrectorRoute: PoseCorrectorRoute,
   ProfileRoute: ProfileRoute,
