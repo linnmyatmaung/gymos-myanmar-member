@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useI18n } from "@/lib/i18n";
 
 const statusColor: Record<AttendanceStatus, string> = {
   present: "bg-secondary text-white",
@@ -18,18 +19,19 @@ const statusColor: Record<AttendanceStatus, string> = {
   scheduled: "bg-primary-container/10 text-primary-container border border-primary-container/30",
 };
 
-const statusLabel: Record<AttendanceStatus, string> = {
-  present: "Present",
-  absent: "Absent",
-  rest: "Rest day",
-  scheduled: "Trainer assigned",
-};
-
 export function AttendanceCalendar() {
   const [selected, setSelected] = useState<string | null>(null);
+  const { language, t } = useI18n();
   const today = new Date();
-  const monthLabel = today.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  const locale = language === "my" ? "my-MM" : language === "zh" ? "zh-CN" : "en-US";
+  const monthLabel = today.toLocaleDateString(locale, { month: "long", year: "numeric" });
   const firstDow = new Date(today.getFullYear(), today.getMonth(), 1).getDay();
+  const statusLabel: Record<AttendanceStatus, string> = {
+    present: t("attendance.present"),
+    absent: t("attendance.absent"),
+    rest: t("attendance.rest"),
+    scheduled: t("attendance.trainerAssigned"),
+  };
 
   const selectedDay = selected ? attendance.find((d) => d.date === selected) : null;
   const exercises = selected ? exercisesForDate(selected, selectedDay?.status) : [];
@@ -40,21 +42,21 @@ export function AttendanceCalendar() {
         <div>
           <div className="flex items-center gap-2 text-xs font-medium text-on-surface-variant">
             <Calendar className="size-4" />
-            Attendance
+            {t("attendance.title")}
           </div>
           <h3 className="font-display text-xl font-bold text-on-surface mt-1">{monthLabel}</h3>
         </div>
         <div className="flex flex-wrap items-center justify-end gap-3 text-[10px] text-on-surface-variant">
-          <Legend color="bg-secondary" label="Present" />
-          <Legend color="bg-red-600" label="Absent" />
-          <Legend color="bg-surface-container-high border border-dashed border-outline-variant" label="Rest day" />
-          <Legend color="bg-primary-container/10 border border-primary-container/30" label="Assigned" />
+          <Legend color="bg-secondary" label={t("attendance.present")} />
+          <Legend color="bg-red-600" label={t("attendance.absent")} />
+          <Legend color="bg-surface-container-high border border-dashed border-outline-variant" label={t("attendance.rest")} />
+          <Legend color="bg-primary-container/10 border border-primary-container/30" label={t("attendance.assigned")} />
         </div>
       </div>
 
       <div className="grid grid-cols-7 gap-1.5 text-center text-[10px] font-semibold text-on-surface-variant mb-2">
-        {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
-          <div key={i}>{d}</div>
+        {["S", "M", "T", "W", "T", "F", "S"].map((day, i) => (
+          <div key={i}>{day}</div>
         ))}
       </div>
       <div className="grid grid-cols-7 gap-1.5">
@@ -109,24 +111,24 @@ export function AttendanceCalendar() {
             {selectedDay?.status === "absent" && (
               <StatusMessage
                 icon={X}
-                title="Marked absent"
-                text="This was a planned training day, but no gym check-in was recorded."
+                title={t("attendance.markedAbsent")}
+                text={t("attendance.markedAbsentText")}
                 tone="absent"
               />
             )}
             {selectedDay?.status === "rest" && (
               <StatusMessage
                 icon={Bed}
-                title="Rest day"
-                text="No workout was assigned for this day. Recovery is part of the plan."
+                title={t("attendance.rest")}
+                text={t("attendance.restText")}
                 tone="rest"
               />
             )}
             {selectedDay?.status === "scheduled" && (
               <StatusMessage
                 icon={CalendarClock}
-                title="Upcoming workout"
-                text="Your trainer has assigned this as a future training day."
+                title={t("attendance.upcomingWorkout")}
+                text={t("attendance.upcomingText")}
                 tone="scheduled"
               />
             )}
@@ -159,7 +161,7 @@ export function AttendanceCalendar() {
                       {ex.name}
                     </div>
                     <div className="text-xs text-on-surface-variant mt-0.5">
-                      {ex.sets} sets · {ex.reps} reps · {ex.duration}
+                      {ex.sets} {t("plan.sets")} • {ex.reps} {t("plan.reps")} • {ex.duration}
                     </div>
                   </div>
                   <span

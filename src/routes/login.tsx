@@ -4,6 +4,7 @@ import { Dumbbell, LockKeyhole, LogIn, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { login } from "@/lib/auth";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/login")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -18,6 +19,7 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
   const router = useRouter();
   const { redirect } = Route.useSearch();
+  const { t } = useI18n();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -27,7 +29,7 @@ function LoginPage() {
     setError("");
 
     if (!login(username, password)) {
-      setError("Username or password is incorrect.");
+      setError(t("login.error"));
       return;
     }
 
@@ -43,14 +45,14 @@ function LoginPage() {
             <Dumbbell className="size-5" />
           </div>
           <div>
-            <h1 className="font-display text-2xl font-bold text-on-surface">GymOS Login</h1>
-            <p className="mt-1 text-sm text-on-surface-variant">Sign in to open the member portal.</p>
+            <h1 className="font-display text-2xl font-bold text-on-surface">{t("login.title")}</h1>
+            <p className="mt-1 text-sm text-on-surface-variant">{t("login.subtitle")}</p>
           </div>
         </div>
 
         <form className="space-y-5" onSubmit={handleSubmit}>
           <label className="block space-y-2">
-            <span className="text-sm font-medium text-on-surface">Username</span>
+            <span className="text-sm font-medium text-on-surface">{t("login.username")}</span>
             <div className="relative">
               <UserRound className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-on-surface-variant" />
               <Input
@@ -65,7 +67,7 @@ function LoginPage() {
           </label>
 
           <label className="block space-y-2">
-            <span className="text-sm font-medium text-on-surface">Password</span>
+            <span className="text-sm font-medium text-on-surface">{t("login.password")}</span>
             <div className="relative">
               <LockKeyhole className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-on-surface-variant" />
               <Input
@@ -87,7 +89,7 @@ function LoginPage() {
 
           <Button type="submit" className="h-11 w-full rounded-xl">
             <LogIn className="size-4" />
-            Sign in
+            {t("login.signIn")}
           </Button>
         </form>
       </section>

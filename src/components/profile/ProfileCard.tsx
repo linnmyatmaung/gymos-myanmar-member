@@ -1,15 +1,18 @@
 import { member } from "@/mockdata/member";
 import { getCurrentUser, logout } from "@/lib/auth";
 import { useNavigate, useRouter } from "@tanstack/react-router";
-import { Mail, Phone, IdCard, Crown, CalendarCheck, User, Target, LogOut } from "lucide-react";
+import { Mail, Phone, IdCard, Crown, CalendarCheck, User, Target, LogOut, Languages } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { languages, useI18n, type Language } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
 
 export function ProfileCard() {
   const navigate = useNavigate();
   const router = useRouter();
   const user = getCurrentUser();
   const profileName = user?.displayName ?? member.name;
+  const { language, setLanguage, t } = useI18n();
 
   const handleLogout = async () => {
     logout();
@@ -33,17 +36,17 @@ export function ProfileCard() {
             className="size-24 rounded-3xl bg-surface-container ring-4 ring-white shadow-soft"
           />
           <div className="absolute -bottom-1 -right-1 bg-secondary text-white text-[10px] font-bold px-2 py-1 rounded-full">
-            ACTIVE
+            {t("common.active")}
           </div>
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-xs text-on-surface-variant">Welcome back</div>
+          <div className="text-xs text-on-surface-variant">{t("profile.welcomeBack")}</div>
           <h2 className="font-display text-2xl font-bold text-on-surface truncate">{profileName}</h2>
           <div className="flex items-center gap-2 mt-1 text-xs">
             <Crown className="size-3.5 text-secondary" />
             <span className="font-medium text-on-surface">{member.membership}</span>
             <span className="text-outline">•</span>
-            <span className="text-on-surface-variant">Expires {member.expiry}</span>
+            <span className="text-on-surface-variant">{t("common.expires")} {member.expiry}</span>
           </div>
         </div>
         <Button
@@ -53,17 +56,49 @@ export function ProfileCard() {
           className="h-10 w-full rounded-xl bg-surface-lowest sm:w-auto"
         >
           <LogOut className="size-4" />
-          Logout
+          {t("common.logout")}
         </Button>
       </div>
 
+      <div className="relative mt-6 rounded-2xl bg-surface-container-low p-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="grid size-10 shrink-0 place-items-center rounded-2xl bg-white text-on-surface-variant">
+              <Languages className="size-4" />
+            </div>
+            <div>
+              <div className="text-sm font-semibold text-on-surface">{t("profile.languageSettings")}</div>
+              <div className="text-xs text-on-surface-variant">{t("common.languageSubtitle")}</div>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-1 rounded-2xl bg-white p-1">
+            {languages.map((option) => (
+              <button
+                key={option.code}
+                type="button"
+                onClick={() => setLanguage(option.code as Language)}
+                className={cn(
+                  "rounded-xl px-3 py-2 text-xs font-bold transition",
+                  language === option.code
+                    ? "bg-secondary-container text-on-secondary-container shadow-soft"
+                    : "text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface",
+                )}
+                aria-pressed={language === option.code}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
       <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
-        <Field icon={IdCard} label="Member ID" value={member.memberId} />
-        <Field icon={Mail} label="Email" value={member.email} />
-        <Field icon={Phone} label="Phone" value={member.phone} />
-        <Field icon={CalendarCheck} label="Expires" value={member.expiry} />
-        <Field icon={User} label="Trainer" value={member.trainer} />
-        <Field icon={Target} label="Goal" value={member.goal} />
+        <Field icon={IdCard} label={t("common.memberId")} value={member.memberId} />
+        <Field icon={Mail} label={t("common.email")} value={member.email} />
+        <Field icon={Phone} label={t("common.phone")} value={member.phone} />
+        <Field icon={CalendarCheck} label={t("common.expires")} value={member.expiry} />
+        <Field icon={User} label={t("common.trainer")} value={member.trainer} />
+        <Field icon={Target} label={t("common.goal")} value={member.goal} />
       </div>
     </motion.div>
   );

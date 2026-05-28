@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Coffee, UtensilsCrossed, Moon, Cookie, Droplet, User } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useI18n, type TranslationKey } from "@/lib/i18n";
 
 export const Route = createFileRoute("/diet-plan")({
   component: DietPlanPage,
@@ -22,14 +23,15 @@ const mealIcon = {
 
 function DietPlanPage() {
   const [activeDay, setActiveDay] = useState(0);
+  const { t } = useI18n();
   const day = dietPlan[activeDay];
 
   return (
     <AppShell>
       <PageHeader
-        eyebrow="Nutrition"
-        title="Diet Plan"
-        subtitle="A balanced 7-day meal plan tuned for performance and recovery."
+        eyebrow={t("diet.eyebrow")}
+        title={t("diet.title")}
+        subtitle={t("diet.subtitle")}
         actions={
           <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-surface-container-low border border-outline-variant/40">
             <div className="size-7 rounded-full bg-secondary-container grid place-items-center">
@@ -52,18 +54,18 @@ function DietPlanPage() {
                 : "bg-surface-container-low text-on-surface-variant hover:bg-surface-container",
             )}
           >
-            {d.day.slice(0, 3)}
+            {t(`day.${d.day}` as TranslationKey).slice(0, 3)}
             <div className={cn("text-[10px] mt-0.5", i === activeDay ? "text-on-primary-container" : "text-outline")}>
-              {dietPlan[i].totalCalories} kcal
+              {dietPlan[i].totalCalories} {t("diet.kcal")}
             </div>
           </button>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
-        <NutritionCard label="Protein" value={`${day.protein}g`} pct={75} color="#006a61" />
-        <NutritionCard label="Carbs" value={`${day.carbs}g`} pct={62} color="#131b2e" />
-        <NutritionCard label="Fat" value={`${day.fat}g`} pct={48} color="#76777d" />
+        <NutritionCard label={t("diet.protein")} value={`${day.protein}g`} pct={75} color="#006a61" />
+        <NutritionCard label={t("diet.carbs")} value={`${day.carbs}g`} pct={62} color="#131b2e" />
+        <NutritionCard label={t("diet.fat")} value={`${day.fat}g`} pct={48} color="#76777d" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -84,9 +86,11 @@ function DietPlanPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                      <h3 className="font-display text-lg font-bold text-on-surface">{meal.type}</h3>
+                      <h3 className="font-display text-lg font-bold text-on-surface">
+                        {t(`meal.${meal.type}` as TranslationKey)}
+                      </h3>
                       <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface">
-                        {meal.calories} kcal
+                        {meal.calories} {t("diet.kcal")}
                       </span>
                     </div>
                     <ul className="mt-3 space-y-1.5">

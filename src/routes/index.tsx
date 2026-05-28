@@ -24,6 +24,7 @@ import {
   loadWorkoutCompletion,
   WORKOUT_PROGRESS_EVENT,
 } from "@/lib/workout-progress";
+import { useI18n, type TranslationKey } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
   component: Dashboard,
@@ -33,8 +34,10 @@ export const Route = createFileRoute("/")({
 });
 
 function Dashboard() {
+  const { t } = useI18n();
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  const greeting =
+    hour < 12 ? t("dashboard.goodMorning") : hour < 18 ? t("dashboard.goodAfternoon") : t("dashboard.goodEvening");
   const [completion, setCompletion] = useState(() => createEmptyWorkoutCompletion(workoutPlan));
   const todaySummary = getTodayWorkoutSummary(workoutPlan, completion);
   const nextWorkout = getNextTrainerAssignedWorkout();
@@ -54,9 +57,9 @@ function Dashboard() {
   return (
     <AppShell>
       <PageHeader
-        eyebrow={`${analytics.streak} day streak`}
+        eyebrow={t("dashboard.streak", { count: analytics.streak })}
         title={`${greeting}, ${member.name.split(" ")[0]}`}
-        subtitle="Today's training, attendance and next trainer-assigned workout at a glance."
+        subtitle={t("dashboard.subtitle")}
         actions={
           <motion.div
             whileHover={{ scale: 1.03 }}
@@ -70,31 +73,31 @@ function Dashboard() {
 
       <div className="mb-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <StatCard
-          label="Workouts completed today"
+          label={t("dashboard.workoutsCompletedToday")}
           value={`${todaySummary.completedCount}/${todaySummary.totalCount}`}
           icon={Dumbbell}
-          delta={todaySummary.isWorkoutComplete ? "Done" : "Today"}
+          delta={todaySummary.isWorkoutComplete ? t("dashboard.done") : t("dashboard.today")}
           accent="primary"
           index={0}
         />
         <StatCard
-          label="Calories burned today (approx.)"
+          label={t("dashboard.caloriesBurnedToday")}
           value={todaySummary.caloriesBurned}
           icon={Flame}
-          delta="Est."
+          delta={t("dashboard.estimated")}
           accent="secondary"
           index={1}
         />
         <StatCard
-          label="Active days"
+          label={t("dashboard.activeDays")}
           value={analytics.activeDays}
           icon={CalendarCheck}
-          delta="3 days"
+          delta={`3 ${t("dashboard.days")}`}
           accent="tertiary"
           index={2}
         />
         <StatCard
-          label="Attendance"
+          label={t("dashboard.attendance")}
           value={`${analytics.attendancePercent}%`}
           icon={Percent}
           delta="4%"
@@ -111,6 +114,7 @@ function Dashboard() {
 }
 
 function NextWorkoutCard({ nextWorkout }: { nextWorkout: ReturnType<typeof getNextTrainerAssignedWorkout> }) {
+  const { t } = useI18n();
   const totalMinutes = nextWorkout.exercises.reduce((total, exercise) => {
     const minutes = Number.parseInt(exercise.duration, 10);
     return total + (Number.isNaN(minutes) ? 0 : minutes);
@@ -125,19 +129,19 @@ function NextWorkoutCard({ nextWorkout }: { nextWorkout: ReturnType<typeof getNe
       <div>
         <div className="flex items-center gap-2 text-xs font-medium text-on-surface-variant">
           <CalendarDays className="size-4" />
-          Next trainer-assigned workout
+          {t("dashboard.nextWorkout")}
         </div>
         <h2 className="mt-2 font-display text-2xl font-bold text-on-surface">
-          {nextWorkout.relativeDay}: {nextWorkout.focus}
+          {t(`day.${nextWorkout.relativeDay}` as TranslationKey)}: {nextWorkout.focus}
         </h2>
         <div className="mt-2 flex items-center gap-2 text-sm text-on-surface-variant">
           <UserRoundCheck className="size-4" />
-          Assigned by {member.trainer}
+          {t("dashboard.assignedBy", { trainer: member.trainer })}
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3 sm:flex sm:items-center">
-        <FixtureStat label="Exercises" value={nextWorkout.exercises.length} />
-        <FixtureStat label="Approx. time" value={`${totalMinutes} min`} />
+        <FixtureStat label={t("dashboard.exercises")} value={nextWorkout.exercises.length} />
+        <FixtureStat label={t("dashboard.approxTime")} value={t("dashboard.minutes", { count: totalMinutes })} />
       </div>
     </motion.div>
   );

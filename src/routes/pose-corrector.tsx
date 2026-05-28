@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/layout/AppShell";
 import { ArrowRight, ScanLine, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/pose-corrector")({
   component: PoseCorrectorPage,
@@ -9,13 +10,15 @@ export const Route = createFileRoute("/pose-corrector")({
 });
 
 function PoseCorrectorPage() {
+  const { t } = useI18n();
+
   return (
     <AppShell>
       <ComingSoonHero
         icon={ScanLine}
-        eyebrow="AI Module"
-        title="Pose Corrector"
-        subtitle="AI Pose Correction module coming soon."
+        eyebrow={t("pose.eyebrow")}
+        title={t("pose.title")}
+        subtitle={t("pose.subtitle")}
         route="/gymos/postcorrector"
       />
     </AppShell>

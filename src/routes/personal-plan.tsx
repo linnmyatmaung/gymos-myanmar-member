@@ -18,6 +18,7 @@ import {
   loadWorkoutCompletion,
   saveWorkoutCompletion,
 } from "@/lib/workout-progress";
+import { useI18n, type TranslationKey } from "@/lib/i18n";
 
 export const Route = createFileRoute("/personal-plan")({
   component: PersonalPlan,
@@ -25,6 +26,7 @@ export const Route = createFileRoute("/personal-plan")({
 });
 
 function PersonalPlan() {
+  const { t } = useI18n();
   const [selectedExercise, setSelectedExercise] = useState<{
     name: string;
     focus: string;
@@ -54,9 +56,9 @@ function PersonalPlan() {
   return (
     <AppShell>
       <PageHeader
-        eyebrow="7-Day Plan"
-        title="Personal Plan"
-        subtitle={`Crafted by your trainer to push you toward ${member.goal.toLowerCase()}.`}
+        eyebrow={t("plan.eyebrow")}
+        title={t("plan.title")}
+        subtitle={t("plan.subtitle", { goal: member.goal.toLowerCase() })}
         actions={
           <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-surface-container-low border border-outline-variant/40">
             <div className="size-7 rounded-full bg-secondary-container grid place-items-center">
@@ -70,9 +72,9 @@ function PersonalPlan() {
       <div className="m3-card-elevated p-6 mb-6">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <div className="text-xs text-on-surface-variant">Weekly completion</div>
+            <div className="text-xs text-on-surface-variant">{t("plan.weeklyCompletion")}</div>
             <div className="font-display text-2xl font-bold text-on-surface">
-              Completed {completedDays} of 7 days
+              {t("plan.completedDays", { count: completedDays })}
             </div>
           </div>
           <div className="font-display text-3xl font-bold text-secondary">
@@ -112,12 +114,14 @@ function PersonalPlan() {
                     allDone ? "bg-secondary text-white" : "bg-surface-container-highest text-on-surface",
                   )}
                 >
-                  {allDone ? <Check className="size-5" /> : day.day.slice(0, 2)}
+                  {allDone ? <Check className="size-5" /> : t(`day.${day.day}` as TranslationKey).slice(0, 2)}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-display text-lg font-semibold text-on-surface">{day.day}</div>
+                  <div className="font-display text-lg font-semibold text-on-surface">
+                    {t(`day.${day.day}` as TranslationKey)}
+                  </div>
                   <div className="text-xs text-on-surface-variant">
-                    {day.focus} · {day.exercises.length} exercises
+                    {day.focus} • {t("plan.exercises", { count: day.exercises.length })}
                   </div>
                 </div>
                 <div className="hidden sm:block text-xs font-semibold text-on-surface-variant">
@@ -211,6 +215,7 @@ function PersonalPlan() {
 
       <ExerciseVideoDialog
         exercise={selectedExercise}
+        openYoutubeLabel={t("plan.openYoutube")}
         onOpenChange={(open) => {
           if (!open) setSelectedExercise(null);
         }}
@@ -221,9 +226,11 @@ function PersonalPlan() {
 
 function ExerciseVideoDialog({
   exercise,
+  openYoutubeLabel,
   onOpenChange,
 }: {
   exercise: { name: string; focus: string; youtubeVideoId: string } | null;
+  openYoutubeLabel: string;
   onOpenChange: (open: boolean) => void;
 }) {
   const query = exercise ? `${exercise.name} exercise form tutorial` : "";
@@ -264,7 +271,7 @@ function ExerciseVideoDialog({
             className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-primary-container px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-container/90"
           >
             <PlayCircle className="size-4" />
-            Open on YouTube
+            {openYoutubeLabel}
           </a>
         </div>
       </DialogContent>

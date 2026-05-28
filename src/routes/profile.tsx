@@ -5,6 +5,7 @@ import { ProfileCard } from "@/components/profile/ProfileCard";
 import { QRCard } from "@/components/qr/QRCard";
 import { member } from "@/mockdata/member";
 import { Crown } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/profile")({
   component: ProfilePage,
@@ -14,12 +15,14 @@ export const Route = createFileRoute("/profile")({
 });
 
 function ProfilePage() {
+  const { t } = useI18n();
+
   return (
     <AppShell>
       <PageHeader
-        eyebrow="Member profile"
-        title="Profile"
-        subtitle="Manage your membership details and gym check-in QR."
+        eyebrow={t("profile.eyebrow")}
+        title={t("profile.title")}
+        subtitle={t("profile.subtitle")}
         actions={
           <div className="flex items-center gap-2 rounded-full bg-secondary-container px-4 py-2.5 text-sm font-semibold text-on-secondary-container">
             <Crown className="size-4" />

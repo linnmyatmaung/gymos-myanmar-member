@@ -16,6 +16,7 @@ import {
   UtensilsCrossed,
 } from "lucide-react";
 import { type ChangeEvent, type DragEvent, useEffect, useMemo, useRef, useState } from "react";
+import { useI18n } from "@/lib/i18n";
 
 const BACKEND_URL = "https://j22lb47qctisbi7d7d4urx4k3a0ptmty.lambda-url.ap-southeast-1.on.aws/api/scan";
 const HEALTH_URL = "https://j22lb47qctisbi7d7d4urx4k3a0ptmty.lambda-url.ap-southeast-1.on.aws/api/health";
@@ -43,6 +44,7 @@ export const Route = createFileRoute("/calorie-counter")({
 
 function CalorieCounterPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { t } = useI18n();
   const [apiStatus, setApiStatus] = useState<ApiStatus>("checking");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [result, setResult] = useState<ScanResult | null>(null);
@@ -143,9 +145,9 @@ function CalorieCounterPage() {
   return (
     <AppShell>
       <PageHeader
-        eyebrow="Nutrition AI"
-        title="Calorie Counter"
-        subtitle="Scan a meal photo to estimate ingredients, portions, and calories."
+        eyebrow={t("calorie.eyebrow")}
+        title={t("calorie.title")}
+        subtitle={t("calorie.subtitle")}
         actions={<StatusPill status={apiStatus} />}
       />
 
@@ -162,9 +164,9 @@ function CalorieCounterPage() {
                 <ImageUp className="size-5" />
               </div>
               <div>
-                <h2 className="font-display text-xl font-bold text-on-surface">Scan a meal photo</h2>
+                <h2 className="font-display text-xl font-bold text-on-surface">{t("calorie.scanPhoto")}</h2>
                 <p className="mt-1 text-sm text-on-surface-variant">
-                  Clear lighting and visible portions help the estimate.
+                  {t("calorie.scanHint")}
                 </p>
               </div>
             </div>
@@ -191,15 +193,15 @@ function CalorieCounterPage() {
                 >
                   <img
                     src={previewUrl}
-                    alt="Uploaded meal preview"
+                    alt={t("calorie.previewAlt")}
                     className="h-full min-h-[320px] w-full object-cover"
                   />
                   {isLoading && (
                     <div className="absolute inset-0 grid place-items-center bg-primary-container/55 backdrop-blur-sm">
                       <div className="rounded-2xl bg-white/95 px-5 py-4 text-center shadow-elevated">
                         <Loader2 className="mx-auto size-7 animate-spin text-secondary" />
-                        <div className="mt-2 text-sm font-bold text-on-surface">Analyzing food</div>
-                        <div className="text-xs text-on-surface-variant">Estimating visible ingredients</div>
+                        <div className="mt-2 text-sm font-bold text-on-surface">{t("calorie.analyzing")}</div>
+                        <div className="text-xs text-on-surface-variant">{t("calorie.estimatingIngredients")}</div>
                       </div>
                     </div>
                   )}
@@ -228,9 +230,9 @@ function CalorieCounterPage() {
                     <span className="mx-auto mb-5 grid size-16 place-items-center rounded-2xl bg-secondary-container text-on-secondary-container shadow-soft">
                       <UploadCloud className="size-7" />
                     </span>
-                    <span className="block font-display text-xl font-bold text-on-surface">Choose food image</span>
+                    <span className="block font-display text-xl font-bold text-on-surface">{t("calorie.chooseImage")}</span>
                     <span className="mt-2 block text-sm leading-6 text-on-surface-variant">
-                      Upload a single item or a full plate. You will see the image here while results load.
+                      {t("calorie.uploadHint")}
                     </span>
                   </span>
                 </motion.label>
@@ -250,10 +252,14 @@ function CalorieCounterPage() {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <h2 className="font-display text-xl font-bold text-on-surface">
-                  {result?.meal_title || "Meal Breakdown"}
+                  {result?.meal_title || t("calorie.breakdown")}
                 </h2>
                 <p className="mt-1 text-sm text-on-surface-variant">
-                  {result ? (apiStatus === "demo" ? "Demo analysis complete" : "Nutritional analysis complete") : "Estimated nutrition dashboard"}
+                  {result
+                    ? apiStatus === "demo"
+                      ? t("calorie.demoComplete")
+                      : t("calorie.analysisComplete")
+                    : t("calorie.dashboard")}
                 </p>
               </div>
               <div className="grid size-11 place-items-center rounded-2xl bg-surface-container-high text-secondary">
@@ -290,7 +296,7 @@ function CalorieCounterPage() {
                       ))
                     ) : (
                       <div className="rounded-2xl bg-surface-container-low p-4 text-sm text-on-surface-variant">
-                        No ingredients were returned by the scan.
+                        {t("calorie.noIngredients")}
                       </div>
                     )}
                   </div>
@@ -298,10 +304,10 @@ function CalorieCounterPage() {
                   <div className="mt-auto flex items-center gap-4 rounded-[1.25rem] border border-outline-variant/40 bg-surface-container-low p-4">
                     <ProgressRing percentage={dailyPercentage} />
                     <div className="min-w-0">
-                      <div className="text-sm font-bold text-on-surface">Total Calories</div>
+                      <div className="text-sm font-bold text-on-surface">{t("calorie.totalCalories")}</div>
                       <div className="mt-1 text-sm text-on-surface-variant">
                         <span className="font-display text-2xl font-bold text-on-surface">{totalCalories}</span>{" "}
-                        kcal of {DAILY_TARGET} daily target
+                        {t("calorie.dailyTarget", { target: DAILY_TARGET })}
                       </div>
                     </div>
                   </div>
@@ -318,7 +324,7 @@ function CalorieCounterPage() {
               onClick={saveScan}
             >
               {isSaved ? <Check className="size-4" /> : <Save className="size-4" />}
-              {isSaved ? "Saved" : "Save to Log"}
+              {isSaved ? t("calorie.saved") : t("calorie.saveToLog")}
             </Button>
             <Button
               type="button"
@@ -328,7 +334,7 @@ function CalorieCounterPage() {
               onClick={resetScanner}
             >
               <RotateCcw className="size-4" />
-              Retake Photo
+              {t("calorie.retake")}
             </Button>
           </div>
         </motion.section>
@@ -338,11 +344,12 @@ function CalorieCounterPage() {
 }
 
 function StatusPill({ status }: { status: ApiStatus }) {
+  const { t } = useI18n();
   const label = {
-    checking: "Checking API",
-    ready: "OpenRouter ready",
-    demo: "Demo mode",
-    offline: "API offline",
+    checking: t("status.checking"),
+    ready: t("status.ready"),
+    demo: t("status.demo"),
+    offline: t("status.offline"),
   }[status];
 
   return (
@@ -362,6 +369,8 @@ function StatusPill({ status }: { status: ApiStatus }) {
 }
 
 function EmptyState() {
+  const { t } = useI18n();
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -373,9 +382,9 @@ function EmptyState() {
         <div className="mx-auto mb-4 grid size-14 place-items-center rounded-2xl bg-surface-container-high text-secondary">
           <Flame className="size-7" />
         </div>
-        <h3 className="font-display text-xl font-bold text-on-surface">Ready for a breakdown</h3>
+        <h3 className="font-display text-xl font-bold text-on-surface">{t("calorie.readyBreakdown")}</h3>
         <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-          Your estimated nutrition dashboard will appear here after upload.
+          {t("calorie.readyText")}
         </p>
       </div>
     </motion.div>
@@ -383,6 +392,8 @@ function EmptyState() {
 }
 
 function LoadingState() {
+  const { t } = useI18n();
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -394,9 +405,9 @@ function LoadingState() {
         <div className="mx-auto mb-4 grid size-14 place-items-center rounded-2xl bg-secondary-container text-on-secondary-container">
           <Loader2 className="size-7 animate-spin" />
         </div>
-        <h3 className="font-display text-xl font-bold text-on-surface">Analyzing food</h3>
+        <h3 className="font-display text-xl font-bold text-on-surface">{t("calorie.analyzing")}</h3>
         <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-          Estimating visible ingredients and calorie totals.
+          {t("calorie.estimatingTotals")}
         </p>
       </div>
     </motion.div>
@@ -404,6 +415,7 @@ function LoadingState() {
 }
 
 function IngredientRow({ item, index }: { item: Ingredient; index: number }) {
+  const { t } = useI18n();
   const calories = safeNumber(item.calories);
   const weight = safeNumber(item.weight_grams);
   const fillRatio = Math.min((calories / 300) * 100, 100);
@@ -412,8 +424,10 @@ function IngredientRow({ item, index }: { item: Ingredient; index: number }) {
     <div className="rounded-2xl bg-surface-container-low p-4">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <div className="font-semibold text-on-surface">{item.name || "Food item"}</div>
-          <div className="mt-0.5 text-xs text-on-surface-variant">{weight}g estimated portion</div>
+          <div className="font-semibold text-on-surface">{item.name || t("calorie.foodItem")}</div>
+          <div className="mt-0.5 text-xs text-on-surface-variant">
+            {t("calorie.portion", { weight })}
+          </div>
         </div>
         <div className="shrink-0 rounded-full bg-white px-3 py-1 text-xs font-bold text-on-surface shadow-soft">
           {calories} kcal

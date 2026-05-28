@@ -2,9 +2,11 @@ import { QRCodeSVG } from "qrcode.react";
 import { Download, ScanLine } from "lucide-react";
 import { useRef } from "react";
 import { member } from "@/mockdata/member";
+import { useI18n } from "@/lib/i18n";
 
 export function QRCard() {
   const qrRef = useRef<HTMLDivElement>(null);
+  const { t } = useI18n();
 
   const saveToGallery = async () => {
     const svg = qrRef.current?.querySelector("svg");
@@ -46,7 +48,7 @@ export function QRCard() {
     <div className="m3-card-elevated p-6 flex flex-col items-center text-center">
       <div className="flex items-center gap-2 text-xs font-medium text-on-surface-variant mb-4">
         <ScanLine className="size-4" />
-        Gym Check-In QR
+        {t("qr.title")}
       </div>
       <div ref={qrRef} className="p-4 bg-white rounded-3xl border border-outline-variant/40 shadow-soft">
         <QRCodeSVG
@@ -60,7 +62,7 @@ export function QRCard() {
       </div>
       <div className="mt-5">
         <div className="font-display text-lg font-bold text-on-surface">{member.memberId}</div>
-        <div className="text-xs text-on-surface-variant mt-1">Scan at gym entrance</div>
+        <div className="text-xs text-on-surface-variant mt-1">{t("qr.scanEntrance")}</div>
       </div>
       <button
         type="button"
@@ -68,7 +70,7 @@ export function QRCard() {
         className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary-container py-3 text-sm font-semibold text-white transition hover:bg-primary-container/90"
       >
         <Download className="size-4" />
-        Save to Gallery
+        {t("qr.save")}
       </button>
     </div>
   );
