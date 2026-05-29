@@ -1,76 +1,33 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AppShell } from "@/components/layout/AppShell";
-import { ArrowRight, ScanLine, Sparkles } from "lucide-react";
-import { motion } from "framer-motion";
-import { useI18n } from "@/lib/i18n";
+import { useEffect } from "react";
+
+const poseCorrectorUrl =
+  "https://huggingface.co/spaces/Ambatakam89/burmese-voice-pose-corrector";
 
 export const Route = createFileRoute("/pose-corrector")({
-  component: PoseCorrectorPage,
-  head: () => ({ meta: [{ title: "Pose Corrector · GymOS" }] }),
+  component: PoseCorrectorRedirect,
+  head: () => ({ meta: [{ title: "Pose Corrector - GymOS" }] }),
 });
 
-function PoseCorrectorPage() {
-  const { t } = useI18n();
+function PoseCorrectorRedirect() {
+  useEffect(() => {
+    window.location.replace(poseCorrectorUrl);
+  }, []);
 
   return (
-    <AppShell>
-      <ComingSoonHero
-        icon={ScanLine}
-        eyebrow={t("pose.eyebrow")}
-        title={t("pose.title")}
-        subtitle={t("pose.subtitle")}
-        route="/gymos/postcorrector"
-      />
-    </AppShell>
-  );
-}
-
-function ComingSoonHero({
-  icon: Icon,
-  eyebrow,
-  title,
-  subtitle,
-  route,
-}: {
-  icon: typeof ScanLine;
-  eyebrow: string;
-  title: string;
-  subtitle: string;
-  route: string;
-}) {
-  return (
-    <div className="min-h-[70vh] grid place-items-center">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.96, y: 16 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="relative w-full max-w-2xl m3-card-elevated p-10 sm:p-14 text-center overflow-hidden"
-      >
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-container via-primary-container to-tertiary-container" />
-        <div className="absolute -right-20 -top-20 size-72 rounded-full bg-secondary/30 blur-3xl" />
-        <div className="absolute -left-20 -bottom-20 size-72 rounded-full bg-secondary-container/40 blur-3xl" />
-
-        <div className="relative text-white">
-          <motion.div
-            animate={{ rotate: [0, 6, -6, 0] }}
-            transition={{ duration: 4, repeat: Infinity }}
-            className="size-20 rounded-3xl bg-white/10 backdrop-blur grid place-items-center mx-auto mb-6 ring-1 ring-white/20"
-          >
-            <Icon className="size-9 text-secondary-container" />
-          </motion.div>
-          <div className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-secondary-container bg-white/10 px-3 py-1 rounded-full">
-            <Sparkles className="size-3" />
-            {eyebrow}
-          </div>
-          <h1 className="font-display text-5xl sm:text-6xl font-bold mt-5 tracking-tight">{title}</h1>
-          <p className="text-on-primary-container mt-3 max-w-sm mx-auto">{subtitle}</p>
-
-          <button className="mt-8 inline-flex items-center gap-2 bg-secondary-container text-on-secondary-container px-6 py-3 rounded-full text-sm font-bold hover:scale-105 transition-transform">
-            {route}
-            <ArrowRight className="size-4" />
-          </button>
-        </div>
-      </motion.div>
-    </div>
+    <main className="grid min-h-screen place-items-center bg-surface px-4 text-center text-on-surface">
+      <div>
+        <h1 className="text-xl font-semibold">Opening Pose Corrector</h1>
+        <p className="mt-2 text-sm text-on-surface-variant">
+          Redirecting to the Hugging Face Space.
+        </p>
+        <a
+          href={poseCorrectorUrl}
+          className="mt-5 inline-flex items-center justify-center rounded-full bg-secondary-container px-5 py-2.5 text-sm font-bold text-on-secondary-container transition-transform hover:scale-105"
+        >
+          Open Pose Corrector
+        </a>
+      </div>
+    </main>
   );
 }

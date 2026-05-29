@@ -19,7 +19,12 @@ export const navItems = [
   { to: "/personal-plan", labelKey: "nav.personalPlan", icon: Dumbbell },
   { to: "/diet-plan", labelKey: "nav.dietPlan", icon: Salad },
   { to: "/calorie-counter", labelKey: "nav.calories", icon: Flame },
-  { to: "/pose-corrector", labelKey: "nav.poseAi", icon: ScanLine },
+  {
+    to: "/pose-corrector",
+    href: "https://huggingface.co/spaces/Ambatakam89/burmese-voice-pose-corrector",
+    labelKey: "nav.poseAi",
+    icon: ScanLine,
+  },
   { to: "/profile", labelKey: "nav.profile", icon: UserCircle },
 ] as const;
 
@@ -51,17 +56,15 @@ export function Sidebar() {
         {navItems.map((item) => {
           const active = path === item.to;
           const Icon = item.icon;
-          return (
-            <Link
-              key={item.to}
-              to={item.to}
-              className={cn(
-                "relative flex items-center gap-3 px-4 py-3 rounded-2xl transition-all group",
-                active
-                  ? "text-on-surface"
-                  : "text-on-surface-variant hover:bg-surface-container/70 hover:text-on-surface",
-              )}
-            >
+          const className = cn(
+            "relative flex items-center gap-3 px-4 py-3 rounded-2xl transition-all group",
+            active
+              ? "text-on-surface"
+              : "text-on-surface-variant hover:bg-surface-container/70 hover:text-on-surface",
+          );
+
+          const content = (
+            <>
               {active && (
                 <motion.div
                   layoutId="active-pill"
@@ -71,6 +74,24 @@ export function Sidebar() {
               )}
               <Icon className="size-5 relative z-10" strokeWidth={active ? 2.4 : 1.8} />
               <span className={cn("relative z-10 text-sm", active && "font-semibold")}>{t(item.labelKey)}</span>
+            </>
+          );
+
+          if ("href" in item) {
+            return (
+              <a key={item.to} href={item.href} className={className}>
+                {content}
+              </a>
+            );
+          }
+
+          return (
+            <Link
+              key={item.to}
+              to={item.to}
+              className={className}
+            >
+              {content}
             </Link>
           );
         })}
@@ -105,12 +126,9 @@ export function BottomNav() {
         {navItems.map((item) => {
           const active = path === item.to;
           const Icon = item.icon;
-          return (
-            <Link
-              key={item.to}
-              to={item.to}
-              className="relative flex min-w-0 flex-col items-center gap-1 px-1 py-2"
-            >
+          const className = "relative flex min-w-0 flex-col items-center gap-1 px-1 py-2";
+          const content = (
+            <>
               <div
                 className={cn(
                   "relative size-9 sm:size-10 rounded-2xl grid place-items-center transition-colors",
@@ -127,6 +145,24 @@ export function BottomNav() {
               >
                 {t(item.labelKey)}
               </span>
+            </>
+          );
+
+          if ("href" in item) {
+            return (
+              <a key={item.to} href={item.href} className={className}>
+                {content}
+              </a>
+            );
+          }
+
+          return (
+            <Link
+              key={item.to}
+              to={item.to}
+              className={className}
+            >
+              {content}
             </Link>
           );
         })}
