@@ -3,7 +3,7 @@ export const analytics = {
   caloriesBurned: 48230,
   activeDays: 96,
   attendancePercent: 87,
-  streak: 5,
+  streak: 4,
   weeklyMinutes: [
     { day: "Mon", min: 65, cal: 480 },
     { day: "Tue", min: 72, cal: 520 },
